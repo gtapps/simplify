@@ -1,6 +1,6 @@
 # simplify
 
-A Claude Code skill that does focused code review and cleanup on the changes you've made in your current branch. Replicates the original bundled `/simplify` command that was removed in Claude Code v2.1.146.
+A Skill that attempts to replicates the original bundled `/simplify` command that was removed in Claude Code v2.1.146. It's code review and cleanup on the changes you've made in your current branch. 
 
 ## What it does
 
