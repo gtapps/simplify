@@ -1,54 +1,27 @@
-# simplify
+# simplify (archived)
 
-A Skill based of the original bundled `/simplify` command removed in Claude Code v2.1.146 — code review and cleanup on the changes in your current branch.
+This project is no longer maintained. [Claude Code v2.1.154](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md#21154) restored a dedicated `/simplify` cleanup workflow, so this standalone skill is no longer needed. Use the built-in command instead.
 
-> **Note:** v2.1.152 brought `/simplify` back as `/code-review --fix`. This skill is a cheaper alternative — it pins subagents to Sonnet instead of Opus like the original one did.
+## Migration
 
-## What it does
+1. Remove this repository's installed `~/.claude/skills/simplify/SKILL.md`. Save any personal modifications before removing it. If you installed the skill elsewhere, remove that copy too.
+2. Start a new Claude Code session and use the built-in `/simplify`.
+3. To request Sonnet review agents, run:
 
-Captures your current diff (`git diff HEAD` + untracked files), then runs **three review subagents in parallel**:
+   ```text
+   /simplify use sonnet agents
+   ```
 
-1. **Code Reuse** — missed opportunities to use existing helpers, logic that duplicates utilities elsewhere in the repo
-2. **Code Quality** — redundant state, parameter sprawl, copy-paste, stringly-typed code, verbose patterns
-3. **Efficiency** — unnecessary work, N+1 patterns, missed concurrency, hot-path bloat
+   For a persistent preference, add this rule to your user or project `CLAUDE.md`:
 
-Reviewers return findings as JSON. The main agent merges them, filters against behavior-preservation and clarity rules, and applies edits sequentially. Proposals that conflict or risk behavior changes are logged under "Noticed but not applied" instead of applied.
+   ```markdown
+   - When running `/simplify`, use Sonnet for every review subagent by explicitly setting `model: "sonnet"` on each Agent call.
+   ```
 
-## Install
+## Historical implementation
 
-```bash
-mkdir -p ~/.claude/skills/simplify
-curl -fsSL https://raw.githubusercontent.com/gtapps/simplify/main/SKILL.md \
-  -o ~/.claude/skills/simplify/SKILL.md
-```
-
-Then invoke with `/simplify` in any Claude Code session.
-
-## Usage
-
-```
-/simplify
-/simplify memory efficiency
-/simplify "avoid breaking the public API"
-```
-
-The optional argument is passed to all three reviewers as a focus hint.
-
-## Output
-
-```
-path/to/file.ts
-  ✓ [Quality] removed `=== true` comparison on line 31
-  ✓ [Reuse]   replaced manual loop with `.reduce(...)` on line 53
-  ⊘ [Efficiency] skipped — old_string no longer matches (subsumed)
-
-Noticed but not applied:
-  ⚠ [Reuse] proposed `email.partition("@")` with None return for no-@ inputs
-      (lines 95-99) — behavior change vs original (`""`). To apply: ask explicitly.
-
-Totals: applied 2 · deduped 1 · principle-rejected 1 · stale-anchor skips 1 · parse failures 0
-```
+This skill provided parallel code review and cleanup when Claude Code's bundled `/simplify` was removed, with review subagents pinned to Sonnet. The original [SKILL.md](./SKILL.md) remains available for reference, but will receive no further updates.
 
 ## License
 
-MIT — see [LICENSE](./LICENSE).
+MIT. See [LICENSE](./LICENSE).
